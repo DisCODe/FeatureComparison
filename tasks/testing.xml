@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Task>
+   <!-- reference task information -->
+   <Reference>
+      <Author>
+         <name>Łukasz Jendrzejek</name>
+         <link></link>
+      </Author>
+      
+      <Description>
+         <brief>Descriptor:BRIEFTesting</brief>
+         <full>Task testing the performance of the BRIEF descriptor using FAST keypoint detector.</full>   
+      </Description>
+   </Reference>
+   
+   <!-- task definition -->
+   <Subtasks>
+      <Subtask name="Processing">
+         <Executor name="Exec1"  period="1">
+            <Component name="Source0" type="DescriptorTesting:Sequence" priority="1" bump="0">
+               <param name="sequence.directory">%[TASK_LOCATION]%/../data/wall</param>
+               <param name="sequence.pattern">.*\.ppm</param>
+               <param name="mode.loop">0</param>
+               <param name="mode.iterate">1</param>
+            </Component>
+            <Component name="Source1" type="DescriptorTesting:Sequence" priority="2" bump="0">
+               <param name="sequence.directory">%[TASK_LOCATION]%/../data/wall</param>
+               <param name="sequence.pattern">.*\.ppm</param>
+               <param name="mode.loop">0</param>
+               <param name="mode.iterate">1</param>
+            </Component>
+
+            <Component name="BRIEF0" type="DescriptorTesting:CvBRIEF" priority="3" bump="0">
+            </Component>
+
+            <Component name="BRIEF1" type="DescriptorTesting:CvBRIEF" priority="4" bump="0">
+            </Component>
+            
+            <Component name="Window" type="DescriptorTesting:CvWindow" priority="1" bump="0">
+               <param name="count">3</param>
+               <param name="title">Image0,Image1,Matching</param>
+            </Component>
+            
+         </Executor>
+      </Subtask>
+   
+   </Subtasks>
+   
+   <!-- connections between events and handelrs -->
+   <Events>
+   </Events>
+   
+   <!-- pipes connecting datastreams -->
+   <DataStreams>
+      <Source name="Source0.out_img">
+         <sink>BRIEF0.in_img</sink>      
+         <sink>Window.in_img0</sink>      
+      </Source>
+
+      <Source name="Source1.out_img">
+         <sink>BRIEF1.in_img</sink>      
+         <sink>Window.in_img1</sink>      
+      </Source>
+
+      <Source name="BRIEF0.out_features">
+         <sink>Window.in_draw0</sink>      
+      </Source>
+
+      <Source name="BRIEF1.out_features">
+         <sink>Window.in_draw1</sink>      
+      </Source>
+
+   </DataStreams>
+</Task>
+
+
+
+

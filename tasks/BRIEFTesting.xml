@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Task>
+   <!-- reference task information -->
+   <Reference>
+      <Author>
+         <name>Łukasz Jendrzejek</name>
+         <link></link>
+      </Author>
+      
+      <Description>
+         <brief>Descriptor:BRIEFTesting</brief>
+         <full>Task testing the performance of the BRIEF descriptor using FAST keypoint detector.</full>   
+      </Description>
+   </Reference>
+   
+   <!-- task definition -->
+   <Subtasks>
+      <Subtask name="Processing">
+         <Executor name="Exec1"  period="0.1">
+            <Component name="Source0" type="CvBasic:Sequence" priority="1" bump="0">
+               <param name="sequence.directory">%[TASK_LOCATION]%/../data/</param>
+               <param name="sequence.pattern">.*.(jpg|png|bmp|ppm)</param>
+               <param name="mode.loop">0</param>
+               <param name="mode.iterate">0</param>
+            </Component>
+            <Component name="Source1" type="CvBasic:Sequence" priority="2" bump="0">
+               <param name="sequence.directory">%[TASK_LOCATION]%/../data/</param>
+               <param name="sequence.pattern">.*.(jpg|png|bmp|ppm)</param>
+               <param name="mode.loop">0</param>
+               <param name="mode.iterate">0</param>
+            </Component>
+            
+            <Component name="BRIEF0" type="CvBRIEF" priority="3" bump="0">
+            </Component>
+
+            <Component name="BRIEF1" type="CvBRIEF" priority="4" bump="0">
+            </Component>
+
+            <Component name="FlannBinary" type="CvFlannBinary" priority="5" bump="1">
+            </Component>
+            
+         </Executor>
+      </Subtask>
+      
+      <Subtask name="Visualisation">
+         <Executor name="Exec2" period="0.01">
+            <Component name="Window" type="CvWindow" priority="1" bump="0">
+               <param name="count">3</param>
+               <param name="title">Image0,Image1,Matching</param>
+            </Component>
+         </Executor>
+      </Subtask>   
+   
+   </Subtasks>
+   
+   <!-- connections between events and handelrs -->
+   <Events>
+   </Events>
+   
+   <!-- pipes connecting datastreams -->
+   <DataStreams>
+      <Source name="Source0.out_img">
+         <sink>BRIEF0.in_img</sink>      
+         <sink>FlannBinary.in_img0</sink>      
+         <sink>Window.in_img0</sink>      
+      </Source>
+
+      <Source name="Source1.out_img">
+         <sink>BRIEF1.in_img</sink>      
+         <sink>FlannBinary.in_img1</sink>      
+         <sink>Window.in_img1</sink>      
+      </Source>
+            
+      <Source name="BRIEF0.out_features">
+         <sink>FlannBinary.in_features0</sink>      
+         <sink>Window.in_draw0</sink>      
+      </Source>
+
+      <Source name="BRIEF0.out_descriptors">
+         <sink>FlannBinary.in_descriptors0</sink>      
+      </Source>
+
+      <Source name="BRIEF1.out_features">
+         <sink>FlannBinary.in_features1</sink>      
+         <sink>Window.in_draw1</sink>      
+      </Source>
+            
+      <Source name="BRIEF1.out_descriptors">
+         <sink>FlannBinary.in_descriptors1</sink>      
+      </Source>
+      
+      <Source name="FlannBinary.out_img">
+         <sink>Window.in_img2</sink>      
+      </Source>
+
+   </DataStreams>
+</Task>
+
+
+
+
